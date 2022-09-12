@@ -17,6 +17,7 @@ typedef struct EignValueObj{
 
 /* implementation for K-means Calculation process and it's helper functions */
 
+
 int eps_distance(double* vec1, double* vec2, int d){
     double norm1;
     double norm2;
@@ -33,9 +34,9 @@ int eps_distance(double* vec1, double* vec2, int d){
     }
 
     norm1 = pow(norm1,0.5);
-    norm2 = pow(norm2, 0.5);
+    norm2 = pow(norm2,0.5);
 
-    delta = pow(pow(norm1 - norm2, 2),0.5);
+    delta = fabs(norm1 - norm2);
 
     result = delta < EPSILON ? 1 : 0;
     return result;
@@ -51,18 +52,20 @@ double distance(double* a, double* b, int d){
     }
     return distance;
 }
-void findmatch(int* closest_index, double** centroids, double* vector,int k, int d){
+int findMatch(double** centroids, double* vector,int k, int d){
     int i;
-    int curr_distance;
-    double min_distance = 100000000;
+    double curr_distance;
+    int closest_index = -1;
+    double min_distance = 1000000;
 
     for (i = 0; i < k; i++){
         curr_distance = distance(vector, centroids[i],d);
         if (curr_distance < min_distance){
             min_distance = curr_distance;
-            *closest_index = i;
+            closest_index = i;
         }
     }
+    return closest_index;
 }
 
 int checkDiff(double** centroids, double** centroids_in_progress, int k, int d){
@@ -95,21 +98,27 @@ void kmeansAlgorithm(double** observations, double** centroids, int n, int d,int
     double* sizes = (double*) calloc(k, sizeof(double));
     double** centroids_in_progress = allocationMatrix(k,d);
 
-    while(iterations < MAXITER && !norm_condition){
+    while(iterations < MAXITER && norm_condition == 0){
         for (i = 0; i < n; i ++){
-            findmatch(&closest_index, centroids, observations[i],k,d);
+            closest_index = findMatch(centroids, observations[i],k,d);
             sizes[closest_index] += 1;
             acumulate_sum(centroids_in_progress[closest_index], observations[i], d);
         }
 
         for(i = 0; i < k; i++){
             for (j = 0 ; j < d; j++){
-                if (sizes[i] != 0)
+                if (sizes[i] != 0){
                     centroids_in_progress[i][j] = centroids_in_progress[i][j] / sizes[i];
+                }
             }
         }
 
         norm_condition = checkDiff(centroids, centroids_in_progress,k,d);
+
+        if (norm_condition == 1)
+            {
+                break;
+            }
         
         for( i = 0; i < k; i++){
             for(j = 0; j < d; j ++){
@@ -121,6 +130,7 @@ void kmeansAlgorithm(double** observations, double** centroids, int n, int d,int
 
         iterations++;
     }
+
     freeMatrix(centroids_in_progress,k);
     free(sizes);
     printMatrix(centroids,k,k);    
