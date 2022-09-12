@@ -20,15 +20,15 @@ static PyObject* getDataPoints_capi(PyObject *self, PyObject *args){
     int n,d,k;
     double** sourceDataForC, **newDataPoints;
 
-    if(!PyArg_ParseTuple(args,"iiiO",&n,&d,&k,&source_dataPy)){ // recieve the python arguments
+    if(!PyArg_ParseTuple(args,"iiiO",&n,&d,&k,&source_dataPy)){ /*recieve the python arguments*/
         return NULL;
     }
 
     result_dataPy = PyList_New(n);
     sourceDataForC = allocationMatrix(n,d);
-    convert_pyMatrix_to_cMatrix(source_dataPy,sourceDataForC,n,d); // convert the matrix to c format
-    newDataPoints = getDataPoints(sourceDataForC,n,d,&k); // using the spkmeans process to get tthe new data points
-    convert_cMatrix_to_pyMAtrix(result_dataPy,newDataPoints,n,k); // convert the data back to python format
+    convert_pyMatrix_to_cMatrix(source_dataPy,sourceDataForC,n,d); /* convert the matrix to c format*/
+    newDataPoints = getDataPoints(sourceDataForC,n,d,&k); /* using the spkmeans process to get tthe new data points*/
+    convert_cMatrix_to_pyMAtrix(result_dataPy,newDataPoints,n,k); /*convert the data back to python format*/
     freeMatrix(sourceDataForC,n);
     return result_dataPy;
 

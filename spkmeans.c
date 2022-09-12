@@ -104,7 +104,8 @@ void kmeansAlgorithm(double** observations, double** centroids, int n, int d,int
 
         for(i = 0; i < k; i++){
             for (j = 0 ; j < d; j++){
-                centroids_in_progress[i][j] = centroids_in_progress[i][j] / sizes[i];
+                if (sizes[i] != 0)
+                    centroids_in_progress[i][j] = centroids_in_progress[i][j] / sizes[i];
             }
         }
 
