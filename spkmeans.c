@@ -298,16 +298,16 @@ void printMatrix(double** matrix, int n, int d) { /* print a matrix of dimention
         for (j = 0; j <  d - 1; j++)
         {
             value = matrix[i][j];
-            // if (value < 0 && value > (-1) * EPSILON)
-            //     printf("0.0000,");
-            // else
+            /*if(value < 0 && value > (-1) * EPSILON)
+                printf("0.0000,");
+            else*/
                 printf("%.4f,", value);
         }
         
         value = matrix[i][d-1];
-        // if (value < 0 && value > (-1) * EPSILON)
-        //     printf("0.0000");
-        // else
+        /* if (value < 0 && value > (-1) * EPSILON)
+             printf("0.0000");
+        else */
             printf("%.4f", value);
 
         putchar('\n');
