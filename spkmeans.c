@@ -298,16 +298,16 @@ void printMatrix(double** matrix, int n, int d) { /* print a matrix of dimention
         for (j = 0; j <  d - 1; j++)
         {
             value = matrix[i][j];
-            if (value < 0 && value > (-1) * EPSILON)
-                printf("0.0000,");
-            else
+            // if (value < 0 && value > (-1) * EPSILON)
+            //     printf("0.0000,");
+            // else
                 printf("%.4f,", value);
         }
         
         value = matrix[i][d-1];
-        if (value < 0 && value > (-1) * EPSILON)
-            printf("0.0000");
-        else
+        // if (value < 0 && value > (-1) * EPSILON)
+        //     printf("0.0000");
+        // else
             printf("%.4f", value);
 
         putchar('\n');
@@ -444,12 +444,9 @@ void formRotaionAndAtagMatrix(double** P ,double** A, int n){
     double tetha, signTetha, absTetha;
     double *maxRowcolumn, *maxColcolumn; 
 
-
-
-
-    for (i = 0; i < n; i++){ /* the matrix is simetric so we can scan just the elemets beyond the diagonal*/
-        for(j = i; j < n; j++){
-            if(fabs(A[i][j]) > fabs(maxValue) && i != j ){
+    for (i = 0; i < n; i++){ /* the matrix is simetric so we can scan just the elemets above the diagonal*/
+        for(j = i + 1; j < n; j++){
+            if(fabs(A[i][j]) >= fabs(maxValue) && i != j ){
                 maxValueRow = i;
                 maxValueCol = j;
                 maxValue = A[maxValueRow][maxValueCol];
@@ -458,6 +455,7 @@ void formRotaionAndAtagMatrix(double** P ,double** A, int n){
     } 
     
     /*compute the rotation values - theta, s,t,c*/
+
     tetha = (A[maxValueCol][maxValueCol]-A[maxValueRow][maxValueRow])/(2*A[maxValueRow][maxValueCol]);
     tetha < 0 ? (signTetha = -1) : (signTetha = 1);
     tetha < 0 ? (absTetha = - tetha) : (absTetha = tetha);
@@ -582,11 +580,14 @@ void jaccobiAlgorithm (double** V, double** A, int n){
     double** temp = allocationMatrix(n,n);
     formIdentityMatrix(V,n); /* first: V equal to the Identity matrix */
 
+
+
     do{
         offA = offAtag;
         formRotaionAndAtagMatrix(P,A,n);
         multiplyMatrix(temp,V,P,n);
         copyMatrix(V,temp,n);
+
         offAtag = getOff(A,n);
         iteration ++;
 
@@ -778,6 +779,7 @@ void jacobiProcess(double** observations, int n){
 
     double** eigenVectors = allocationMatrix(n,n);
     double* eigenValues = (double*) calloc (n,sizeof(double));
+
 
     jaccobiAlgorithm(eigenVectors,observations,n);
     fill_with_diagonal(eigenValues,observations,n);
